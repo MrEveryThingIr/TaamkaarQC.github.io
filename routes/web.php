@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrdererController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrdererController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\DrawingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -13,25 +15,20 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // Single route to load the dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Vertical navigation routes
-    Route::get('/dashboard/overview', function () {
-        return view('dashboard.overview');
-    })->name('dashboard.overview');
+    // Orderer-related actions
+    Route::post('/orderers', [OrdererController::class, 'store'])->name('orderers.store');
 
-    Route::get('/orderers/create', [OrdererController::class, 'create'])->name('orderers.create');
-    Route::post('/orderers', [OrdererController::class, 'store'])->name('orderers.store'); // Add this line
+    // Project-related actions under a specific orderer
+    Route::post('/orderers/{orderer}/projects', [ProjectController::class, 'store'])->name('orderers.projects.store');
 
-    Route::get('/dashboard/settings', function () {
-        return view('dashboard.settings');
-    })->name('dashboard.settings');
+    // Drawing-related actions for a specific project
+    Route::post('/projects/{project}/drawings', [DrawingController::class, 'store'])->name('drawings.store');
 
-    Route::get('/dashboard/profile', function () {
-        return view('dashboard.profile');
-    })->name('dashboard.profile');
-
-    Route::get('/dashboard/support', function () {
-        return view('dashboard.support');
-    })->name('dashboard.support');
+    // Additional dashboard pages rendered in the main area
+    Route::view('/dashboard/settings', 'dashboard.settings')->name('dashboard.settings');
+    Route::view('/dashboard/profile', 'dashboard.profile')->name('dashboard.profile');
+    Route::view('/dashboard/support', 'dashboard.support')->name('dashboard.support');
 });

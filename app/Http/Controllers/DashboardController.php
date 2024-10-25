@@ -9,7 +9,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $orderers = Orderer::all();
+         // Load all orderers with their projects
+         $orderers = Orderer::with('projects')->get();
         return view('dashboard', compact('orderers'));
     }
 }

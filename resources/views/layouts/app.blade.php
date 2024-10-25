@@ -41,7 +41,7 @@
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-right">
+                    <div class="px-4 py-6 mx-auto text-right max-w-7xl sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
@@ -52,8 +52,8 @@
             <!-- Page Content -->
                                      <!-- Flash Message -->
         @if (session('success'))
-        <div class="max-w-3xl mx-auto mt-4 px-4 sm:px-6 lg:px-8">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <div class="max-w-3xl px-4 mx-auto mt-4 sm:px-6 lg:px-8">
+            <div class="relative px-4 py-3 text-green-700 bg-green-100 border border-green-400 rounded" role="alert">
                 <strong class="font-bold">Success!</strong>
                 <span class="block sm:inline">{{ session('success') }}</span>
             </div>
@@ -61,7 +61,7 @@
     @endif
             <main>
 
-                {{ $slot }}
+               @yield('content')
             </main>
         </div>
 
