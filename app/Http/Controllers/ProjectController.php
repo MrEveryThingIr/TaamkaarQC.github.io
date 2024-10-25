@@ -17,18 +17,19 @@ class ProjectController extends Controller
     public function store(Request $request, Orderer $orderer)
     {
         // Validate the form data
-        $validatedData = $request->validate([
+        $validatedData=$request->validate([
             'project_title' => 'required|string|max:255',
             'order_no' => 'required|string|max:50',
             'project_description' => 'nullable|string',
-            'project_manager' => 'nullable|string|max:100',
-            'start_date' => 'nullable|date',
+            'project_manager' => 'required|string|max:100',
+            'start_date' => ['required', 'regex:/^\d{4}-\d{2}-\d{2}$/'],  // Validates as a string with format YYYY-MM-DD
         ]);
+
 
         // Create a new project associated with the specified orderer
         $orderer->projects()->create($validatedData);
 
         // Redirect back to the orderer page or projects listing with success message
-        return redirect()->route('orderers.show', $orderer->id)->with('success', 'پروژه با موفقیت ثبت شد');
+        return redirect()->route('dashboard')->with('success', 'پروژه با موفقیت ثبت شد');
     }
 }

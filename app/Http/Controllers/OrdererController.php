@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class OrdererController extends Controller
 {
+
     public function store(Request $request)
     {
         // Validate the form data, including image validation
