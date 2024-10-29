@@ -8,13 +8,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Load all related models in a nested structure
+        // Adjust nested structure to match actual model relationships
         $orderers = Orderer::with([
-            'projects.drawingParts.dimensions.samples.sampleMeasurements.contradictions'
+            'projects.drawingParts.samples.sampleMeasurements.contradiction', // Use singular 'contradiction' based on SampleMeasurement relationship
+            'projects.drawingParts.dimensions',
         ])->get();
 
-        // Pass the data to the dashboard view
+        // Pass data to the dashboard view
         return view('dashboard', compact('orderers'));
-
     }
 }
