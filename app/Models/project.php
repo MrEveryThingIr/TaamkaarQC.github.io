@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use App\Models\Orderer;
@@ -12,17 +11,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Project extends Model
 {
     use HasFactory;
-    protected $fillable=['project_title','orderer_id','order_no','project_description','project_manager','start_date','completed_at'];
 
-    protected $searchables=['part_name','part_type','part_material','device','drawing_number','part_description'];
-    public function scopeSearchBy(Builder $query,string $field,string|bool|int|float $searched):Builder
+    protected $fillable = [
+        'project_title', 'orderer_id', 'order_no', 'project_description',
+        'project_manager', 'start_date', 'completed_at'
+    ];
+
+    protected static array $searchables = [
+        'part_name', 'part_type', 'part_material', 'device',
+        'drawing_number', 'part_description'
+    ];
+
+    public function scopeSearchBy(Builder $query, string $field, string|bool|int|float $searched): Builder
     {
-        if(in_array($field,$searchables)){
-            return $query->whereHas('parts',function($q) use($field,$searched){
-                $q->where($field,'like','%'.$searched.'%');
+        if (in_array($field, self::$searchables)) {
+            return $query->whereHas('drawingParts', function ($q) use ($field, $searched) {
+                $q->where($field, 'like', '%' . $searched . '%');
             });
         }
-        return $query->with('parts')->where($field, 'like', '%' . $searched . '%');
+        return $query->where($field, 'like', '%' . $searched . '%');
     }
 
     public function drawingParts()
@@ -33,6 +40,5 @@ class Project extends Model
     public function orderer(): BelongsTo
     {
         return $this->belongsTo(Orderer::class);
-
     }
 }

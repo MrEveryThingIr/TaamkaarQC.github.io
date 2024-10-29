@@ -12,8 +12,8 @@ class DrawingPart extends Model
     use HasFactory;
 
     protected $fillable = [
-        'drawing_code', 'drawing_file', 'project_id', 'part_name', 'part_number',
-        'part_type', 'part_material', 'device', 'part_description'
+        'drawing_code', 'drawing_file', 'project_id', 'part_name',
+        'part_number', 'part_type', 'part_material', 'device', 'part_description'
     ];
 
     public function project()

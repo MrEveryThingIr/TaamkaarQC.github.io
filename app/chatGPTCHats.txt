@@ -1,0 +1,208 @@
+<?php
+namespace App\Models;
+
+use App\Models\Dimension;
+use App\Models\PartSample;
+use App\Models\Contradiction;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class SampleMeasurement extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'sample_id', 'dimension_id', 'operator_measurement',
+        'Inspector_measurement', 'accept_orNot', 'description',
+        'measurement_tool', 'other_measurement'
+    ];
+
+    public function partSample()
+    {
+        return $this->belongsTo(PartSample::class, 'sample_id');
+    }
+
+    public function dimension()
+    {
+        return $this->belongsTo(Dimension::class, 'dimension_id');
+    }
+
+    public function contradiction()
+    {
+        return $this->hasOne(Contradiction::class, 'sample_id');
+    }
+}
+
+------------------
+<?php
+
+namespace App\Models;
+
+use App\Models\Orderer;
+use App\Models\DrawingPart;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Project extends Model
+{
+    use HasFactory;
+    protected $fillable=['project_title','orderer_id','order_no','project_description','project_manager','start_date','completed_at'];
+
+    protected $searchables=['part_name','part_type','part_material','device','drawing_number','part_description'];
+    public function scopeSearchBy(Builder $query,string $field,string|bool|int|float $searched):Builder
+    {
+        if(in_array($field,$searchables)){
+            return $query->whereHas('parts',function($q) use($field,$searched){
+                $q->where($field,'like','%'.$searched.'%');
+            });
+        }
+        return $query->with('parts')->where($field, 'like', '%' . $searched . '%');
+    }
+
+    public function drawingParts()
+    {
+        return $this->hasMany(DrawingPart::class);
+    }
+
+    public function orderer(): BelongsTo
+    {
+        return $this->belongsTo(Orderer::class);
+
+    }
+}
+-----------
+<?php
+namespace App\Models;
+
+use App\Models\SampleMeasurement;
+use App\Models\DrawingPart;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class PartSample extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'sample_code', 'drawing_part_id', 'description'
+    ];
+
+    public function drawingPart()
+    {
+        return $this->belongsTo(DrawingPart::class, 'drawing_part_id');
+    }
+
+    public function sampleMeasurements()
+    {
+        return $this->hasMany(SampleMeasurement::class);
+    }
+}
+--------------------
+<?php
+namespace App\Models;
+
+use App\Models\Project;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Orderer extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'orderer_name', 'orderer_phone', 'orderer_email', 'orderer_brand'
+    ];
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+}
+------------------
+<?php
+namespace App\Models;
+
+use App\Models\Project;
+use App\Models\Dimension;
+use App\Models\PartSample;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class DrawingPart extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'drawing_code', 'drawing_file', 'project_id', 'part_name', 'part_number',
+        'part_type', 'part_material', 'device', 'part_description'
+    ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function samples()
+    {
+        return $this->hasMany(PartSample::class);
+    }
+
+    public function dimensions()
+    {
+        return $this->hasMany(Dimension::class);
+    }
+}
+-----------
+<?php
+namespace App\Models;
+
+use App\Models\PartSample;
+use App\Models\DrawingPart;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Dimension extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'drawing_part_id', 'tag', 'viewOrSection', 'nominal_size', 'UpperTolerance', 'LowerTolerance'
+    ];
+
+    public function drawingPart()
+    {
+        return $this->belongsTo(DrawingPart::class, 'drawing_part_id');
+    }
+
+
+}
+-------------------
+<?php
+namespace App\Models;
+
+use App\Models\Dimension;
+use App\Models\PartSample;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Contradiction extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'sample_id', 'dimension_id', 'deviation', 'inspector_explanation',
+        'QC_directorComment', 'ProjectManagerComment', 'total_boss_comment', 'FinalCommand'
+    ];
+
+    public function partSample()
+    {
+        return $this->belongsTo(PartSample::class, 'sample_id');
+    }
+
+    public function dimension()
+    {
+        return $this->belongsTo(Dimension::class, 'dimension_id');
+    }
+}
