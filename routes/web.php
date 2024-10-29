@@ -17,6 +17,7 @@ Route::middleware([
 ])->group(function () {
     // Dashboard Route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
 
     // Resource route for Orderers (includes index, show, store, update, destroy)
     Route::resource('orderers', OrdererController::class)->except(['create', 'edit']);
@@ -41,5 +42,6 @@ Route::middleware([
             Route::put('/{dimension}', [DimensionController::class, 'update'])->name('update'); // Update dimension
             Route::delete('/{dimension}', [DimensionController::class, 'destroy'])->name('destroy'); // Delete dimension
         });
+
     });
 });

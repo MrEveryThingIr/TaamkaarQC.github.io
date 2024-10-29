@@ -32,7 +32,7 @@ class ProjectController extends Controller
         $newproject=$orderer->projects()->create($validatedData);
 
         // Redirect back to the orderer page or projects listing with success message
-        return redirect()->route('projects.show',['project'=>$newproject])->with('success', 'پروژه با موفقیت ثبت شد');
+        return redirect()->route('dashboard')->with('success', 'پروژه با موفقیت ثبت شد');
     }
 
     public function show(Project $project)

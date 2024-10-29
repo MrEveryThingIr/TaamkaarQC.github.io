@@ -9,7 +9,7 @@ class DimensionController extends Controller
     public function store(Request $request, $project, $drawingPart)
     {
         $validatedData = $request->validate([
-            'tag' => 'required|string|max:255|unique:unique:dimensions,tag',
+            'tag' => 'required|string|max:3',
             'viewOrSection' => 'string|max:255',
             'nominal_size' => 'required|numeric',
             'UpperTolerance' => 'string',
