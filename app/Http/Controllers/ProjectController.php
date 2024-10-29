@@ -8,10 +8,12 @@ use Illuminate\Http\Request;
 class ProjectController extends Controller
 {
     // Show form to create a new project for a specific orderer
-    public function create(Orderer $orderer)
+    public function create($orderer)
     {
+        // Pass the $orderer ID if you need it in the view
         return view('projects.create', compact('orderer'));
     }
+
 
     // Store the new project for the specified orderer
     public function store(Request $request, Orderer $orderer)
@@ -27,9 +29,14 @@ class ProjectController extends Controller
 
 
         // Create a new project associated with the specified orderer
-        $orderer->projects()->create($validatedData);
+        $newproject=$orderer->projects()->create($validatedData);
 
         // Redirect back to the orderer page or projects listing with success message
-        return redirect()->route('dashboard')->with('success', 'پروژه با موفقیت ثبت شد');
+        return redirect()->route('projects.show',['project'=>$newproject])->with('success', 'پروژه با موفقیت ثبت شد');
+    }
+
+    public function show(Project $project)
+    {
+        return view('projects.show',compact('project'));
     }
 }

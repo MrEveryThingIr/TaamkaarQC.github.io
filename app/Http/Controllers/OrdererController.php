@@ -8,7 +8,21 @@ use Illuminate\Support\Facades\Storage;
 
 class OrdererController extends Controller
 {
+    public function index()
+    {
+        $orderers=Orderer::with('projects')->get();
+        return view('orderers.index',['orderers'=>$orderers]);
+    }
 
+    public function create()
+    {
+        return view('orderers.create');
+    }
+
+    public function show(Orderer $orderer)
+    {
+        return view('orderers.show',['orderer'=>$orderer]);
+    }
     public function store(Request $request)
     {
         // Validate the form data, including image validation
@@ -25,8 +39,13 @@ class OrdererController extends Controller
         }
 
         // Save orderer to the database
-        Orderer::create($validatedData);
+        $neworderer=Orderer::create($validatedData);
 
-        return redirect()->route('dashboard')->with('success', 'New orderer created successfully.');
+        return redirect()->route('orderers.show',$neworderer)->with('success', 'New orderer created successfully.');
+    }
+    public function destroy(Orderer $orderer)
+    {
+        $orderer->delete();
+        return redirect()->route('dashboard')->with('success',$orderer->orderer_name.'از لیست کارفرمایان حذف شد');
     }
 }

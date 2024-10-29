@@ -3,7 +3,7 @@
 
 <div class="flex items-center justify-center ">
     <div>
-        <x-orderer-form></x-orderer-form>
+        <x-project-form></x-project-form>
     </div>
 
     </div>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('project_title');
-            $table->foreignId('orderer_id')->constrained('orderers');
+            $table->foreignId('orderer_id')->constrained('orderers')->onDelete('cascade');
             $table->string('order_no');
             $table->text('project_description')->nullable()->default('این فیلد اختیاریست. اگر توضیحی راجع به پروژه وجود دارد میتوانید در اینجا وارد نمایید');
             $table->string('project_manager');

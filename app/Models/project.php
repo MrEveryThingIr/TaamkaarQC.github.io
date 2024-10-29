@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Orderer;
+use App\Models\DrawingPart;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,13 +25,14 @@ class Project extends Model
         return $query->with('parts')->where($field, 'like', '%' . $searched . '%');
     }
 
-    public function drawings()
+    public function drawingParts()
     {
-        return $this->hasMany(Drawing::class);
+        return $this->hasMany(DrawingPart::class);
     }
 
-    public function orderer():BelongsTo
+    public function orderer(): BelongsTo
     {
         return $this->belongsTo(Orderer::class);
+
     }
 }
