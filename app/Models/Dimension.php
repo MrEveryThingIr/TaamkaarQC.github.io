@@ -19,8 +19,5 @@ class Dimension extends Model
         return $this->belongsTo(DrawingPart::class, 'drawing_part_id');
     }
 
-    public function samples()
-    {
-        return $this->hasMany(PartSample::class);
-    }
+
 }

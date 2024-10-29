@@ -158,7 +158,7 @@
                         <p>نام دستگاه: {{ $drawingPart->device }}</p>
                         <p>نوع قطعه: {{ $drawingPart->part_type }}</p>
                         <p>توضیحات: {{ $drawingPart->part_description }}</p>
-                        <img src="{{ Storage::url('public/'.$drawingPart->drawing_file) }}"  class="text-blue-600">
+                        <img <img src="{{ Storage::url('drawings/' . $drawingPart->drawing_file) }}" alt="Drawing Image"  class="text-blue-600">
                     </div>
                 @endforeach
             @endforeach

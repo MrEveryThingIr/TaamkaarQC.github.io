@@ -14,7 +14,7 @@ class DashboardController extends Controller
         ])->get();
 
         // Pass the data to the dashboard view
-        return view('dashboard2', compact('orderers'));
+        return view('dashboard', compact('orderers'));
 
     }
 }
