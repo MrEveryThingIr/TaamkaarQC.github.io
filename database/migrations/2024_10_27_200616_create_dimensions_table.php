@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('tag');
             $table->string('viewOrSection');
             $table->float('nominal_size');
-            $table->float('UpperTolerance');
-            $table->float('LowerTolerance');
+            $table->string('UpperTolerance');
+            $table->string('LowerTolerance');
             $table->timestamps();
         });
     }
