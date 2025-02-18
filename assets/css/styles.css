@@ -11,3 +11,13 @@ footer{
 main.container{
     margin-bottom:150px!important ;
 }
+
+
+  .toggle-checkbox:checked {
+    right: 0;
+    border-color: #3b82f6; /* Blue color */
+    background-color: #3b82f6; /* Blue color */
+  }
+  .toggle-checkbox:checked + .toggle-label {
+    background-color: #3b82f6; /* Blue color */
+  }

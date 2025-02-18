@@ -1,5 +1,5 @@
 <?php
 const DB_HOST = "localhost";
-const DB_NAME = "imeveryt_kahroba";
-const DB_USER = "imeveryt_kahroba";
-const DB_PASS = "!!1270Iet";
+const DB_NAME = "tamkar_new";
+const DB_USER = "root";
+const DB_PASS = "";
