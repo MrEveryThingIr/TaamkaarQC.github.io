@@ -11,6 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 
 <script src="assets/js/toggling_input.js"></script>
+<script src="assets/js/DailyReport.js"></script>
 <script src="assets/js/tarikhe_shamsi.js"></script>
 <?php ob_end_flush(); ?>
 </body>

@@ -94,13 +94,6 @@ function getPostData($field, $default = "") {
  * @param int $projectId The ID of the project to check.
  * @return bool True if the project exists, false otherwise.
  */
-function projectExists($projectId) {
-    $query = "SELECT COUNT(*) FROM projects WHERE id = :id";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':id', $projectId, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchColumn() > 0;
-}
 
 /**
  * Handle file uploads and return the uploaded file name or false on failure.
@@ -110,34 +103,42 @@ function projectExists($projectId) {
  * @return string|false Uploaded file name on success, false on failure.
  */
 function handleFileUpload($upload_category, $input_name) {
-    $targetDir = "uploads/{$upload_category}/";
+    $targetDir = uploads_path($upload_category . '/');
 
     // Ensure the upload directory exists
     if (!is_dir($targetDir)) {
         if (!mkdir($targetDir, 0755, true)) {
-            echo "<p class='text-danger'>Failed to create upload directory.</p>";
+            file_put_contents('debug_log.txt', "Failed to create upload directory: $targetDir\n", FILE_APPEND);
             return false;
         }
     }
 
-    // Check if the file was uploaded successfully
-    if (isset($_FILES[$input_name]) && $_FILES[$input_name]['error'] === UPLOAD_ERR_OK) {
-        $originalFileName = basename($_FILES[$input_name]['name']);
-        $fileName = time() . '_' . $originalFileName; // Create a unique file name
-        $targetFilePath = $targetDir . $fileName;
-
-        // Attempt to move the uploaded file
-        if (move_uploaded_file($_FILES[$input_name]['tmp_name'], $targetFilePath)) {
-            return $fileName; // Return the uploaded file name
-        } else {
-            echo "<p class='text-danger'>Failed to move uploaded file.</p>";
-        }
-    } else {
-        $error = $_FILES[$input_name]['error'] ?? 'Unknown error';
-        echo "<p class='text-danger'>File upload error: $error</p>";
+    // Check if a file was uploaded
+    if (!isset($_FILES[$input_name]) || $_FILES[$input_name]['error'] !== UPLOAD_ERR_OK) {
+        file_put_contents('debug_log.txt', "File upload error: " . print_r($_FILES[$input_name], true), FILE_APPEND);
+        return false;
     }
 
-    return false; // Return false on failure
+    $originalFileName = basename($_FILES[$input_name]['name']);
+    $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+
+    // Allow only specific file types
+    $allowedTypes = ['dwg', 'pdf'];
+    if (!in_array(strtolower($extension), $allowedTypes)) {
+        file_put_contents('debug_log.txt', "Invalid file type: $extension\n", FILE_APPEND);
+        return false;
+    }
+
+    $fileName = time() . '_' . $originalFileName; // Generate unique name
+    $targetFilePath = $targetDir . $fileName;
+
+    if (!move_uploaded_file($_FILES[$input_name]['tmp_name'], $targetFilePath)) {
+        file_put_contents('debug_log.txt', "Failed to move uploaded file to $targetFilePath\n", FILE_APPEND);
+        return false;
+    }
+
+    return $fileName;
 }
+
 
 ?>

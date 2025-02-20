@@ -1,0 +1,26 @@
+Array
+(
+    [dwg_file] => Array
+        (
+            [name] => country-01.jpg
+            [full_path] => country-01.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php5902.tmp
+            [error] => 0
+            [size] => 220898
+        )
+
+    [voice_file] => Array
+        (
+            [name] => recording_1740054241412.wav
+            [full_path] => recording_1740054241412.wav
+            [type] => audio/wav
+            [tmp_name] => C:\xampp\tmp\php5903.tmp
+            [error] => 0
+            [size] => 47924
+        )
+
+)
+Invalid file type: wav
+Invalid file type: wav
+Invalid file type: jpg
