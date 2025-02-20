@@ -28,15 +28,14 @@ class Part
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 material VARCHAR(255),
-                project_id INT NOT NULL,
+                dwg_id INT,  -- Foreign key to the 'drawings' table
                 location VARCHAR(255),
                 type VARCHAR(255),
-                dwg_code VARCHAR(255),
-                dwg_file VARCHAR(255),
-                samples_number INT,
+                samples_count INT,  -- Adjusted column name to 'samples_count'
                 description TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+                FOREIGN KEY (dwg_id) REFERENCES drawings(id) ON DELETE CASCADE,  -- Foreign key for drawing
+                
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
             $this->conn->exec($sql);
@@ -84,8 +83,8 @@ class Part
     public function create($data)
     {
         $query = "INSERT INTO {$this->table} 
-            (name, material, project_id, location, type, dwg_code, dwg_file, samples_number, description) 
-            VALUES (:name, :material, :project_id, :location, :type, :dwg_code, :dwg_file, :samples_number, :description)";
+            (name, material, project_id, location, type, dwg_id, samples_count, description) 
+            VALUES (:name, :material, :project_id, :location, :type, :dwg_id, :samples_count, :description)";
         $stmt = $this->conn->prepare($query);
 
         return $stmt->execute($data) ? $this->conn->lastInsertId() : false;
@@ -96,8 +95,8 @@ class Part
     {
         $query = "UPDATE {$this->table} SET 
             name = :name, material = :material, location = :location, 
-            type = :type, dwg_code = :dwg_code, dwg_file = :dwg_file, 
-            samples_number = :samples_number, description = :description 
+            type = :type, dwg_id = :dwg_id, samples_count = :samples_count, 
+            description = :description 
             WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $data['id'] = $id;
