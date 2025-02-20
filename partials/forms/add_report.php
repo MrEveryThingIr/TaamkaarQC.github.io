@@ -12,13 +12,6 @@ if ($voiceFile) {
     $data['description_voice'] = "";
 }
 
-// Handle DWG File Upload
-$dwgFile = handleFileUpload('dwg', 'dwg_file');
-if ($dwgFile) {
-    $data['dwg'] = uploads_url("dwg/$dwgFile"); 
-} else {
-    $data['dwg'] = "";
-}
 
 // Insert data into database
 $report->create($data);
@@ -34,60 +27,60 @@ echo json_encode(["message" => "Report saved successfully"]);
     <form method="post" action="" id="dailyReportForm" enctype="multipart/form-data">
         <!-- Date -->
         <label class="block font-semibold">Date</label>
-        <input type="date" name="date" required class="w-full border p-2 mb-4 rounded">
+        <input type="date" name="date" class="w-full border p-2 mb-4 rounded">
 
         <!-- Hall -->
         <label class="block font-semibold">Hall</label>
-        <input type="text" name="hall" required class="w-full border p-2 mb-4 rounded">
+        <input type="text" name="hall" class="w-full border p-2 mb-4 rounded">
 
         <!-- Device -->
         <label class="block font-semibold">Device</label>
-        <input type="number" name="device" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="device" class="w-full border p-2 mb-4 rounded">
 
         <!-- Operator -->
         <label class="block font-semibold">Operator</label>
-        <input type="number" name="operator" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="operator" class="w-full border p-2 mb-4 rounded">
 
         <!-- Project -->
         <label class="block font-semibold">Project</label>
-        <input type="number" name="project" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="project"  class="w-full border p-2 mb-4 rounded">
 
         <!-- Part -->
         <label class="block font-semibold">Part</label>
-        <input type="number" name="part" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="part"  class="w-full border p-2 mb-4 rounded">
 
 
         <!-- DWG Upload -->
         <label class="block font-semibold">DWG File</label>
-        <input type="file" name="dwg_file" accept=".pdf,.dwg" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="dwg" class="w-full border p-2 mb-4 rounded">
 
 
         <!-- Sample -->
         <label class="block font-semibold">Sample</label>
-        <input type="number" name="sample" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="sample" class="w-full border p-2 mb-4 rounded">
 
         <!-- Dimension -->
         <label class="block font-semibold">Dimension</label>
-        <input type="number" name="dimension" required class="w-full border p-2 mb-4 rounded">
+        <input type="number" name="dimension" class="w-full border p-2 mb-4 rounded">
 
         <!-- Self Control -->
         <label class="block font-semibold">Self Control</label>
         <div class="flex gap-4 mb-4">
-            <label><input type="radio" name="self_control" value="دارد" required> دارد</label>
+            <label><input type="radio" name="self_control" value="دارد" checked> دارد</label>
             <label><input type="radio" name="self_control" value="ندارد"> ندارد</label>
         </div>
 
         <!-- Technology -->
         <label class="block font-semibold">Technology</label>
         <div class="flex gap-4 mb-4">
-            <label><input type="radio" name="technology" value="دارد" required> دارد</label>
-            <label><input type="radio" name="technology" value="ندارد"> ندارد</label>
+            <label><input type="radio" name="technology" value="دارد" > دارد</label>
+            <label><input type="radio" name="technology" value="ندارد" checked> ندارد</label>
         </div>
 
         <!-- Status -->
         <label class="block font-semibold">Status</label>
         <div class="flex gap-4 mb-4">
-            <label><input type="radio" name="status" value="ACCEPT" required> ACCEPT</label>
+            <label><input type="radio" name="status" value="ACCEPT" checked> ACCEPT</label>
             <label><input type="radio" name="status" value="NCR"> NCR</label>
         </div>
 

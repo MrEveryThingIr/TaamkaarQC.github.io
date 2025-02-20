@@ -24,3 +24,5 @@ Array
 Invalid file type: wav
 Invalid file type: wav
 Invalid file type: jpg
+Invalid file type: wav
+Invalid file type: wav
