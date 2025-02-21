@@ -38,12 +38,6 @@ $navbarItems = [
         'active' => $navbarClickedItem === 'add_project'
     ],
     [
-        'label' => 'انتساب نقشه',
-        'url' => 'index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=add_drawing',
-        'icon' => '<svg class="w-6 h-6 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6.828a2 2 0 0 0-.586-1.414L14.586 2.586A2 2 0 0 0 13.172 2H4Zm0 2h8v4h4v8H4V4Zm6 2a1 1 0 0 1 1 1v1h1a1 1 0 0 1 0 2h-1v1a1 1 0 1 1-2 0v-1H7a1 1 0 1 1 0-2h1V7a1 1 0 0 1 1-1Z"/></svg>',
-        'active' => $navbarClickedItem === 'add_drawing'
-    ],
-    [
         'label' => 'گزارش روزانه',
         'url' => 'index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=daily_report',
         'icon' => '<svg class="w-6 h-6 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6.828a2 2 0 0 0-.586-1.414L14.586 2.586A2 2 0 0 0 13.172 2H4Zm0 2h8v4h4v8H4V4Zm6 2a1 1 0 0 1 1 1v1h1a1 1 0 0 1 0 2h-1v1a1 1 0 1 1-2 0v-1H7a1 1 0 1 1 0-2h1V7a1 1 0 0 1 1-1Z"/></svg>',
