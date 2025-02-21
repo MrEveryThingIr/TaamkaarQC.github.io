@@ -16,7 +16,7 @@ class Operator
         $this->ensureTableExists();
     }
 
-    // 🔹 Ensure table exists
+    // Ensure the table exists
     private function ensureTableExists()
     {
         try {
@@ -27,38 +27,54 @@ class Operator
                 nick_name VARCHAR(50) UNIQUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-
+            
             $this->conn->exec($sql);
         } catch (PDOException $e) {
             throw new Exception("Error creating table: " . $e->getMessage());
         }
     }
 
-    // 🔹 CRUD Methods
+    // 🔹 Create a new operator
     public function create($data)
     {
         $query = "INSERT INTO {$this->table} (first_name, last_name, nick_name) 
                   VALUES (:first_name, :last_name, :nick_name)";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute($data) ? $this->conn->lastInsertId() : false;
+        return $stmt->execute($data);
     }
 
-    public function getById($id)
+    // 🔹 Read all operators
+    public function readAll()
+    {
+        $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // 🔹 Read a single operator by ID
+    public function readOne($id)
     {
         $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->execute(['id' => $id]);
-        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // 🔹 Update an operator
     public function update($id, $data)
     {
-        $query = "UPDATE {$this->table} SET first_name = :first_name, last_name = :last_name, nick_name = :nick_name WHERE id = :id";
+        $query = "UPDATE {$this->table} SET 
+                  first_name = :first_name, 
+                  last_name = :last_name, 
+                  nick_name = :nick_name 
+                  WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $data['id'] = $id;
         return $stmt->execute($data);
     }
 
+    // 🔹 Delete an operator
     public function delete($id)
     {
         $query = "DELETE FROM {$this->table} WHERE id = :id";
@@ -66,4 +82,3 @@ class Operator
         return $stmt->execute(['id' => $id]);
     }
 }
-?>

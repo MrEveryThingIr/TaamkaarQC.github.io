@@ -6,8 +6,12 @@
     <?php
     if(isset($_GET['page'])){
         $page=$_GET['page'];
-        if($page='dashboard'){
+        include 'partials/sidebar.php';
+        if($page=='dashboard'){
             include "pages/dashboard.php";
+        }elseif($page=='PMS'){
+          
+            include 'pages/PMS.php';
         }
     }
     ?>

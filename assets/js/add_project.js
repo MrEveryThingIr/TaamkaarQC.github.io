@@ -1,22 +1,29 @@
-$(document).ready(function() {
-    $("#tamkarProjectForm").submit(function(event) {
-        event.preventDefault();
+$.ajax({
+    url: "index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=add_project",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response, textStatus, xhr) {
+        console.log("Full Response:", response); // Log the full response
+        console.log("Status Code:", xhr.status);
         
-        var formData = new FormData(this); // Use FormData to handle file uploads
-
-        // Submit form via Ajax
-        $.ajax({
-            url: "", // Add PHP processing URL here
-            type: "POST",
-            data: formData,
-            processData: false,  // Prevent jQuery from processing the data
-            contentType: false,  // Let the browser set the correct content-type
-            success: function(response) {
-                alert("Project saved successfully!");
-            },
-            error: function() {
-                alert("Error saving project");
+        try {
+            var jsonResponse = JSON.parse(response);
+            if (jsonResponse.status === "success") {
+                alert(jsonResponse.message);
+                $("#tamkarProjectForm")[0].reset();
+            } else {
+                alert("Error: " + jsonResponse.message);
             }
-        });
-    });
+        } catch (e) {
+            alert("Invalid JSON response. Check console for details.");
+            console.error("Parsing error:", e);
+        }
+    },
+    error: function (xhr, status, error) {
+        console.error("AJAX Error:", status, error);
+        console.error("Response Text:", xhr.responseText); // Log full error response
+        alert("An error occurred while saving the project. See console for details.");
+    }
 });

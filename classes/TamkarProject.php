@@ -13,7 +13,7 @@ class TamkarProject
         if ($this->conn === null) {
             throw new Exception('Database connection failed');
         }
-        $this->ensureTableExists(); // Ensure the table exists
+        $this->ensureTableExists();
     }
 
     // Ensure the table exists
@@ -34,86 +34,69 @@ class TamkarProject
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-
+            
             $this->conn->exec($sql);
         } catch (PDOException $e) {
-            throw new Exception("Error ensuring table exists: " . $e->getMessage());
+            throw new Exception("Error creating table: " . $e->getMessage());
         }
     }
 
-    // Get all projects
-    public function getAll()
-    {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY created_at DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
-    }
-
-    // Get project by ID
-    public function getById($id)
-    {
-        $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
-    }
-
-    // Create a new project
+    // 🔹 Create a new project
     public function create($data)
     {
-        $query = "INSERT INTO " . $this->table . " 
-            (title, orderer_name, orderer_brand, project_manager, order_no, product_code, start_date, completed_at, description) 
-            VALUES (:title, :orderer_name, :orderer_brand, :project_manager, :order_no, :product_code, :start_date, :completed_at, :description)";
+        $query = "INSERT INTO {$this->table} 
+                  (title, orderer_name, orderer_brand, project_manager, order_no, product_code, start_date, completed_at, description) 
+                  VALUES (:title, :orderer_name, :orderer_brand, :project_manager, :order_no, :product_code, :start_date, :completed_at, :description)";
         $stmt = $this->conn->prepare($query);
-
-        return $stmt->execute($data) ? $this->conn->lastInsertId() : false;
+        return $stmt->execute($data);
     }
 
-    // Update an existing project
+    // 🔹 Read all projects
+    public function readAll()
+    {
+        $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // 🔹 Read a single project by ID
+    public function readOne($id)
+    {
+        $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // 🔹 Update a project
     public function update($id, $data)
     {
-        $query = "UPDATE " . $this->table . " SET 
-            title = :title, 
-            orderer_name = :orderer_name, 
-            orderer_brand = :orderer_brand, 
-            project_manager = :project_manager, 
-            order_no = :order_no, 
-            product_code = :product_code, 
-            start_date = :start_date, 
-            completed_at = :completed_at, 
-            description = :description
-            WHERE id = :id";
-            
+        $query = "UPDATE {$this->table} SET 
+                  title = :title, orderer_name = :orderer_name, orderer_brand = :orderer_brand, 
+                  project_manager = :project_manager, order_no = :order_no, product_code = :product_code, 
+                  start_date = :start_date, completed_at = :completed_at, description = :description 
+                  WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $data['id'] = $id;
         return $stmt->execute($data);
     }
 
-    // Delete a project by ID
+    // 🔹 Delete a project
     public function delete($id)
     {
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+        $query = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         return $stmt->execute(['id' => $id]);
     }
 
-    // Dynamic search for projects
-    public function search($keyword)
+    // 🔹 Get related drawings for a project
+    public function getDrawings($projectId)
     {
-        $query = "SELECT * FROM " . $this->table . " 
-                  WHERE title LIKE :keyword OR orderer_name LIKE :keyword 
-                  OR project_manager LIKE :keyword OR description LIKE :keyword";
+        $query = "SELECT * FROM drawings WHERE project_id = :project_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute(['keyword' => '%' . $keyword . '%']);
-        return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
-    }
-
-    // Utility function: Get an excerpt of a title or description
-    public function getExcerpt($text, $len = 50)
-    {
-        return strlen($text) > $len ? substr($text, 0, $len) . '...' : $text;
+        $stmt->bindParam(':project_id', $projectId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>

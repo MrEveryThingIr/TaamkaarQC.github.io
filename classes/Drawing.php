@@ -1,5 +1,5 @@
 <?php
-require_once 'Database.php';
+require_once 'Database.php'; // Assuming you have a Database class for DB connection
 
 class Drawing
 {
@@ -16,7 +16,7 @@ class Drawing
         $this->ensureTableExists();
     }
 
-    // 🔹 Ensure table exists
+    // Ensure the table exists
     private function ensureTableExists()
     {
         try {
@@ -35,31 +35,34 @@ class Drawing
         }
     }
 
-    // 🔹 CRUD Methods
+    // 🔹 Create a new record
     public function create($data)
     {
         $query = "INSERT INTO {$this->table} (project_id, drawing_number, drawing_file) 
                   VALUES (:project_id, :drawing_number, :drawing_file)";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute($data) ? $this->conn->lastInsertId() : false;
+        return $stmt->execute($data);
     }
 
-    public function getById($id)
+    // 🔹 Read all records
+    public function readAll()
+    {
+        $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // 🔹 Read a single record by ID
+    public function readOne($id)
     {
         $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->execute(['id' => $id]);
-        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getByProjectId($projectId)
-    {
-        $query = "SELECT * FROM {$this->table} WHERE project_id = :project_id ORDER BY created_at DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute(['project_id' => $projectId]);
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
-    }
-
+    // 🔹 Update a record
     public function update($id, $data)
     {
         $query = "UPDATE {$this->table} SET 
@@ -70,11 +73,24 @@ class Drawing
         return $stmt->execute($data);
     }
 
+    // 🔹 Delete a record
     public function delete($id)
     {
         $query = "DELETE FROM {$this->table} WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         return $stmt->execute(['id' => $id]);
+    }
+
+    // 🔹 Get Parent Project of a Drawing
+    public function getParentProject($drawingId)
+    {
+        $query = "SELECT p.* FROM projects p 
+                  INNER JOIN {$this->table} d ON p.id = d.project_id 
+                  WHERE d.id = :drawing_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':drawing_id', $drawingId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
     }
 }
 ?>

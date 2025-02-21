@@ -8,3 +8,19 @@
 .nav-item:hover { background: #1947ee; }
 .account-link:hover { background: #3d68ff; }
 
+/* <!-- ✅ TailwindCSS Styles --> */
+
+    .active-tab {
+        color: #2563eb; /* Blue */
+        border-bottom: 4px solid #2563eb;
+        background-color: #f3f4f6; /* Light Gray */
+    }
+    
+    .inactive-tab {
+        color: #6b7280; /* Gray */
+        border-bottom: 4px solid transparent;
+    }
+    
+    .nav-item:hover {
+        background-color: #e5e7eb; /* Light Gray */
+    }

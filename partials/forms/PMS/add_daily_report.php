@@ -13,14 +13,16 @@ if ($voiceFile) {
 }
 
 
-// Insert data into database
-$report->create($data);
+$result = $report->create($data);
 
-echo json_encode(["message" => "Report saved successfully"]);
+if ($result) {
+    echo json_encode(["message" => "Report saved successfully"]);
+} else {
+    logError("Failed to save report in DailyReport::create() with data: " . json_encode($data));
+    echo json_encode(["error" => "Failed to save report"]);
+}
+
 ?>
-
-
-
 <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg">
     <h2 class="text-2xl font-bold text-center mb-4">Daily Report Form</h2>
     

@@ -7,27 +7,26 @@
  * @return string Full URL.
  */
 function base_url($path = '') {
-    $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off" ? "https://" : "http://";
-    $host = $_SERVER["HTTP_HOST"];
-    $base_url = rtrim($protocol . $host . '/' . trim(PROJECT_DIR, '/'), '/') . '/';
+    $protocol = $_SERVER['REQUEST_SCHEME'] ?? 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $base_url = rtrim($protocol . '://' . $host . '/' . trim(PROJECT_DIR, '/'), '/') . '/';
     return $base_url . ltrim($path, '/');
 }
 
 /**
  * Generate the base file system path for the application.
  *
- * @param string $path Optional path to append to the base path.
+ * @param string $path Optional path to append.
  * @return string Full file system path.
  */
 function base_path($path = '') {
-    $rootpath = rtrim(dirname(__DIR__), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . trim(PROJECT_DIR, DIRECTORY_SEPARATOR);
-    return $rootpath . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
+    return rtrim(dirname(__DIR__) . DIRECTORY_SEPARATOR . trim(PROJECT_DIR, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
 }
 
 /**
  * Get the full file system path for uploads.
  *
- * @param string $filename Optional filename to append to the uploads path.
+ * @param string $filename Optional filename.
  * @return string Full uploads path.
  */
 function uploads_path($filename = '') {
@@ -37,7 +36,7 @@ function uploads_path($filename = '') {
 /**
  * Get the full URL for uploads.
  *
- * @param string $filename Optional filename to append to the uploads URL.
+ * @param string $filename Optional filename.
  * @return string Full uploads URL.
  */
 function uploads_url($filename = '') {
@@ -47,7 +46,7 @@ function uploads_url($filename = '') {
 /**
  * Get the full URL for assets (e.g., CSS, JS).
  *
- * @param string $path Optional path to append to the assets URL.
+ * @param string $path Optional path.
  * @return string Full assets URL.
  */
 function asset_url($path = '') {
@@ -55,17 +54,16 @@ function asset_url($path = '') {
 }
 
 /**
- * Redirect to a specified URL.
+ * Redirect to a specified URL and exit.
  *
  * @param string $url The URL to redirect to.
  */
 function redirect($url) {
     if (!headers_sent()) {
-        header("Location: $url");
-        exit; // Stop further script execution
-    } else {
-        echo "<p class='text-danger'>Unable to redirect. Headers already sent.</p>";
+        header("Location: $url", true, 302);
+        exit;
     }
+    echo "<p class='text-danger'>Unable to redirect. Headers already sent.</p>";
 }
 
 /**
@@ -80,64 +78,68 @@ function isPostRequest() {
 /**
  * Retrieve sanitized POST data.
  *
- * @param string $field The name of the POST field to retrieve.
- * @param string $default Default value if the field is not set.
+ * @param string $field The POST field name.
+ * @param string $default Default value if field is missing.
  * @return string Sanitized POST data or the default value.
  */
 function getPostData($field, $default = "") {
-    return isset($_POST[$field]) ? htmlspecialchars(trim($_POST[$field]), ENT_QUOTES, 'UTF-8') : $default;
+    return isset($_POST[$field]) ? filter_var(trim($_POST[$field]), FILTER_SANITIZE_STRING) : $default;
 }
 
 /**
- * Check if a project exists in the database by its ID.
+ * Log errors to a debug file.
  *
- * @param int $projectId The ID of the project to check.
- * @return bool True if the project exists, false otherwise.
+ * @param string $message The error message.
  */
+function logError($message) {
+    file_put_contents(base_path('debug_log.txt'), "[" . date('Y-m-d H:i:s') . "] $message\n", FILE_APPEND);
+}
 
 /**
- * Handle file uploads and return the uploaded file name or false on failure.
+ * Handle file uploads dynamically and return the uploaded file name or false on failure.
  *
  * @param string $upload_category Directory category for the file.
  * @param string $input_name Name of the file input field.
+ * @param array $allowedTypes Allowed file types (default: common types).
+ * @param int $maxSize Maximum file size in bytes (default: 5MB).
  * @return string|false Uploaded file name on success, false on failure.
  */
-function handleFileUpload($upload_category, $input_name) {
-    $targetDir = uploads_path($upload_category . '/');
-
-    // Ensure the upload directory exists
-    if (!is_dir($targetDir)) {
-        if (!mkdir($targetDir, 0755, true)) {
-            file_put_contents('debug_log.txt', "Failed to create upload directory: $targetDir\n", FILE_APPEND);
-            return false;
-        }
+function handleFileUpload($upload_category, $input_name, $allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'dwg', 'docx', 'xlsx', 'mp3', 'wav'], $maxSize = 5 * 1024 * 1024) {
+    if (!isset($_FILES[$input_name]) || $_FILES[$input_name]['error'] !== UPLOAD_ERR_OK) {
+        return false; // Return false if file is not uploaded
     }
 
-    // Check if a file was uploaded
-    if (!isset($_FILES[$input_name]) || $_FILES[$input_name]['error'] !== UPLOAD_ERR_OK) {
-        file_put_contents('debug_log.txt', "File upload error: " . print_r($_FILES[$input_name], true), FILE_APPEND);
+    $targetDir = uploads_path($upload_category . DIRECTORY_SEPARATOR);
+
+    // Ensure the upload directory exists
+    if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true)) {
         return false;
     }
 
     $originalFileName = basename($_FILES[$input_name]['name']);
-    $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+    $extension = strtolower(pathinfo($originalFileName, PATHINFO_EXTENSION));
+    $fileSize = $_FILES[$input_name]['size'];
 
-    // Allow only specific file types
-    $allowedTypes = ['dwg', 'pdf'];
-    if (!in_array(strtolower($extension), $allowedTypes)) {
-        file_put_contents('debug_log.txt', "Invalid file type: $extension\n", FILE_APPEND);
+    // Validate file extension
+    if (!in_array($extension, $allowedTypes, true)) {
         return false;
     }
 
-    $fileName = time() . '_' . $originalFileName; // Generate unique name
+    // Validate file size
+    if ($fileSize > $maxSize) {
+        return false;
+    }
+
+    // Generate unique file name
+    $fileName = time() . '_' . uniqid() . '.' . $extension;
     $targetFilePath = $targetDir . $fileName;
 
+    // Move uploaded file
     if (!move_uploaded_file($_FILES[$input_name]['tmp_name'], $targetFilePath)) {
-        file_put_contents('debug_log.txt', "Failed to move uploaded file to $targetFilePath\n", FILE_APPEND);
         return false;
     }
 
-    return $fileName;
+    return $upload_category . '/' . $fileName; // Return relative path
 }
 
 

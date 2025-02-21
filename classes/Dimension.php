@@ -1,5 +1,5 @@
 <?php
-require_once 'Database.php';
+require_once 'Database.php'; // Assuming you have a Database class for DB connection
 
 class Dimension
 {
@@ -24,7 +24,7 @@ class Dimension
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 drawing_id INT NOT NULL,
                 part_id INT NOT NULL,
-                tag VARCHAR(10) NOT NULL, -- 'A', 'B', ..., 'Z', 'A1', ..., 'Z1'
+                tag VARCHAR(10) NOT NULL,
                 station_code VARCHAR(50),
                 nominal_size DECIMAL(10,3) NOT NULL,
                 upper_tolerance DECIMAL(10,3),
@@ -41,18 +41,7 @@ class Dimension
         }
     }
 
-    // 🔹 Get dimensions by part ID
-    public function getByPartId($partId)
-    {
-        $query = "SELECT * FROM {$this->table} WHERE part_id = :part_id ORDER BY created_at ASC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':part_id', $partId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
-    }
-
-    // 🔹 Create a new dimension
+    // 🔹 Create a new record
     public function create($data)
     {
         $query = "INSERT INTO {$this->table} 
@@ -60,22 +49,28 @@ class Dimension
             VALUES (:drawing_id, :part_id, :tag, :station_code, :nominal_size, :upper_tolerance, :lower_tolerance, :status, :description_voice)";
 
         $stmt = $this->conn->prepare($query);
-
-        // Bind parameters
-        $stmt->bindParam(':drawing_id', $data['drawing_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':part_id', $data['part_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':tag', $data['tag']);
-        $stmt->bindParam(':station_code', $data['station_code']);
-        $stmt->bindParam(':nominal_size', $data['nominal_size']);
-        $stmt->bindParam(':upper_tolerance', $data['upper_tolerance']);
-        $stmt->bindParam(':lower_tolerance', $data['lower_tolerance']);
-        $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':description_voice', $data['description_voice']);
-
-        return $stmt->execute();
+        return $stmt->execute($data);
     }
 
-    // 🔹 Update a dimension by ID
+    // 🔹 Read all records
+    public function readAll()
+    {
+        $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // 🔹 Read a single record by ID
+    public function readOne($id)
+    {
+        $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // 🔹 Update a record
     public function update($id, $data)
     {
         $query = "UPDATE {$this->table} SET 
@@ -92,13 +87,10 @@ class Dimension
 
         $stmt = $this->conn->prepare($query);
         $data['id'] = $id;
-
         return $stmt->execute($data);
     }
 
-    
-
-    // 🔹 Delete a dimension by ID
+    // 🔹 Delete a record
     public function delete($id)
     {
         $query = "DELETE FROM {$this->table} WHERE id = :id";
@@ -106,31 +98,28 @@ class Dimension
         return $stmt->execute(['id' => $id]);
     }
 
-        // 🔹 Get Parent Part of a Dimension
-        public function getParentPart($dimensionId)
-        {
-            $query = "SELECT p.* FROM parts p 
-                      INNER JOIN {$this->table} d ON p.id = d.part_id 
-                      WHERE d.id = :dimension_id";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':dimension_id', $dimensionId, PDO::PARAM_INT);
-            $stmt->execute();
-    
-            return $stmt->fetch(PDO::FETCH_OBJ) ?: null; // Return part details or null if not found
-        }
-    
-        // 🔹 Get Parent Drawing of a Dimension
-        public function getParentDrawing($dimensionId)
-        {
-            $query = "SELECT d.* FROM drawings d 
-                      INNER JOIN {$this->table} dm ON d.id = dm.drawing_id 
-                      WHERE dm.id = :dimension_id";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':dimension_id', $dimensionId, PDO::PARAM_INT);
-            $stmt->execute();
-    
-            return $stmt->fetch(PDO::FETCH_OBJ) ?: null; // Return drawing details or null if not found
-        }
-    
+    // 🔹 Get Parent Part of a Dimension
+    public function getParentPart($dimensionId)
+    {
+        $query = "SELECT p.* FROM parts p 
+                  INNER JOIN {$this->table} d ON p.id = d.part_id 
+                  WHERE d.id = :dimension_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':dimension_id', $dimensionId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
+    }
+
+    // 🔹 Get Parent Drawing of a Dimension
+    public function getParentDrawing($dimensionId)
+    {
+        $query = "SELECT d.* FROM drawings d 
+                  INNER JOIN {$this->table} dm ON d.id = dm.drawing_id 
+                  WHERE dm.id = :dimension_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':dimension_id', $dimensionId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
+    }
 }
 ?>

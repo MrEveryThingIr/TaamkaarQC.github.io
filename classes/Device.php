@@ -1,5 +1,5 @@
 <?php
-require_once 'Database.php';
+require_once 'Database.php'; // Assuming you have a Database class for DB connection
 
 class Device
 {
@@ -16,7 +16,6 @@ class Device
         $this->ensureTableExists();
     }
 
-    // 🔹 Ensure table exists
     private function ensureTableExists()
     {
         try {
@@ -26,27 +25,33 @@ class Device
                 device_name VARCHAR(100) NOT NULL UNIQUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-
             $this->conn->exec($sql);
         } catch (PDOException $e) {
-            throw new Exception("Error creating table: " . $e->getMessage());
+            throw new Exception("Error ensuring table exists: " . $e->getMessage());
         }
     }
 
-    // 🔹 CRUD Methods
     public function create($data)
     {
         $query = "INSERT INTO {$this->table} (hall, device_name) VALUES (:hall, :device_name)";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute($data) ? $this->conn->lastInsertId() : false;
+        return $stmt->execute($data);
     }
 
-    public function getById($id)
+    public function readAll()
+    {
+        $query = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function readOne($id)
     {
         $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->execute(['id' => $id]);
-        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function update($id, $data)

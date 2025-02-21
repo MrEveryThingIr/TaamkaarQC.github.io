@@ -1,30 +1,19 @@
 <?php 
-// $items = [];
+$items = [];
 
-// if (isset($_GET['user_action'])) {
-//     $user_action = $_GET['user_action'];
+if ($page == 'PMS') {
+    $items = [
+        'پروژه ها' => 'index.php?page=PMS&sidebarClickedItem=projects'
+
     
-//     if ($user_action == 'profile') {
-        $items = [
-            'افزودن گزارش' => 'index.php?page=dashboard&user_action=add_report',
-            ' لیست گزارشات روزانه' => 'index.php?page=dashboard&user_action=watch_list',
-            'پیگیری پیشرفت قطعات' => 'index.php?page=dashboard&user_action=follow_part',
-            'حذف گزارش' => 'index.php?page=dashboard&user_action=profile&action=delete',
-            // 'مدیریت حساب' => [
-            //     'تغییر رمز عبور' => 'index.php?page=dashboard&user_action=profile&action=change_password',
-            //     'امنیت حساب' => [
-            //         'فعال‌سازی دو مرحله‌ای' => 'index.php?page=dashboard&user_action=profile&action=2fa',
-            //         'لیست دستگاه‌های فعال' => 'index.php?page=dashboard&user_action=profile&action=devices',
-            //     ],
-            // ],
-        ];
-//     }
-// }
+    ];
+}
+
 ?>
 <aside class="bg-sidebar h-screen w-64 hidden sm:block shadow-xl flex flex-col">
     <div class="p-6">
         <a href="index.php?page=home" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">
-            پروین تایر
+       مدیریت کیفی تامکار   
         </a>
         <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
             <i class="fas fa-plus mr-3"></i> اطلاعیه ها
@@ -62,7 +51,7 @@
 
     <div class="p-6 mt-auto">
         <a href="#" class="w-full block text-center text-white opacity-75 hover:opacity-100 py-3 bg-gray-700 rounded-md">
-            <i class="fas fa-arrow-circle-up mr-3"></i> Upgrade to Pro!
+            <i class="fas fa-arrow-circle-up mr-3"></i> ارتباط باما
         </a>
     </div>
 </aside>

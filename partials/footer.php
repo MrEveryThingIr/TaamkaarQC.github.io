@@ -13,7 +13,9 @@
 <script src="assets/js/toggling_input.js"></script>
 <script src="assets/js/DailyReport.js"></script>
 <script src="assets/js/add_device.js"></script>
+<!-- <script src="assets/js/add_project.js"></script> -->
 <script src="assets/js/tarikhe_shamsi.js"></script>
+<script src="assets/js/navbar.js"></script>
 <?php ob_end_flush(); ?>
 </body>
 </html>
