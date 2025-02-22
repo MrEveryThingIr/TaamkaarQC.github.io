@@ -28,7 +28,6 @@ $navConfig = [
     'project' => [
         ['label' => 'همه پروژه ها', 'url' => 'index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
         ['label' => 'تعریف پروژه جدید', 'url' => 'index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
-        ['label' => 'گزارش روزانه', 'url' => 'index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=daily_report', 'active' => $navbarClickedItem === 'daily_report'],
     ],
     'drawing' => [
         ['label' => 'همه ی نقشه ها', 'url' => 'index.php?page=PMS&sidebarClickedItem=drawing&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],

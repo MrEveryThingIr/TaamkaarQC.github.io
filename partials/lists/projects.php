@@ -11,7 +11,7 @@ $projects = $controller->executeAction();
         <h1 class="text-3xl font-bold text-center mb-8">Projects</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($projects as $project): ?>
-                <a href="index.php?page=PMS&sidebarClickedItem=projects&projrct_id=<?= $project['id'] ?>" class="block transform transition duration-300 hover:scale-105">
+                <a href="index.php?page=PMS&project_id=<?= $project['id'] ?>" class="block transform transition duration-300 hover:scale-105">
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                         <!-- Project Image or Audio -->
                         <div class="relative h-48">

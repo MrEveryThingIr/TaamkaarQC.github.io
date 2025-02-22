@@ -14,11 +14,12 @@ $dailyReports = $controller->executeAction();
         <?php foreach ($dailyReports as $report): ?>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden p-6">
                 <h2 class="text-xl font-semibold mb-2">Report Date: <?= htmlspecialchars($report['date']) ?></h2>
-                <p class="text-gray-600 mb-4">Hall: <?= htmlspecialchars($report['hall']) ?></p>
-                <p class="text-gray-600 mb-4">Device: <?= htmlspecialchars($report['device']) ?></p>
-                <p class="text-gray-600 mb-4">Operator: <?= htmlspecialchars($report['operator']) ?></p>
-                <p class="text-gray-600 mb-4">Project: <?= htmlspecialchars($report['project']) ?></p>
-                <p class="text-gray-600 mb-4">Status: <?= htmlspecialchars($report['status']) ?></p>
+<p class="text-gray-600 mb-4">Hall: <?= htmlspecialchars($report['hall'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+<p class="text-gray-600 mb-4">Device: <?= htmlspecialchars($report['device'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+<p class="text-gray-600 mb-4">Operator: <?= htmlspecialchars($report['operator'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+<p class="text-gray-600 mb-4">Project: <?= htmlspecialchars($report['project'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+<p class="text-gray-600 mb-4">Status: <?= htmlspecialchars($report['status'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+
                 
                 <!-- Display voice file if available -->
                 <?php if (!empty($report['description_voice'])): ?>

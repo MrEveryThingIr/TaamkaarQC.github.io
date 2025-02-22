@@ -7,6 +7,7 @@
     if(isset($_GET['page'])){
         $page=$_GET['page'];
         include 'partials/sidebar.php';
+        
         if($page=='dashboard'){
             include "pages/dashboard.php";
         }elseif($page=='PMS'){
