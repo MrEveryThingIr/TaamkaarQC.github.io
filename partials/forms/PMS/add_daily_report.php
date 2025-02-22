@@ -1,28 +1,44 @@
 <?php
-require_once 'classes/DailyReport.php';
+require_once 'classes/controllers/DBController.php'; 
 
-$report = new DailyReport();
-$data = $_POST;
+if (isPostRequest()) {
+    // Handle file upload for voice recording
+    $voiceFileName = handleFileUpload('daily_reports', 'voice_file');
 
-// Handle Voice File Upload
-$voiceFile = handleFileUpload('voices', 'voice_file');
-if ($voiceFile) {
-    $data['description_voice'] = uploads_url("voices/$voiceFile"); 
-} else {
-    $data['description_voice'] = "";
+    // Prepare data for insertion
+    $data = [
+        'date'            => getPostData('date'),
+        'hall'            => getPostData('hall'),
+        'device'          => getPostData('device'),
+        'operator'        => getPostData('operator'),
+        'project'         => getPostData('project'),
+        'part'            => getPostData('part'),
+        'dwg'             => getPostData('dwg'),
+        'sample'          => getPostData('sample'),
+        'dimension'       => getPostData('dimension'),
+        'self_control'    => getPostData('self_control'),
+        'technology'      => getPostData('technology'),
+        'status'          => getPostData('status'),
+        'attachment_note' => getPostData('attachment_note'),
+        'description_voice' => $voiceFileName, // Save uploaded voice file path
+    ];
+
+    try {
+        $controller = new DBController('daily_report', 'create', null, $data);
+        $result = $controller->executeAction();
+
+        if ($result) {
+            redirect('index.php?page=PMS&sidebarClickedItem=daily_report&navbarClickedItem=all');
+        } else {
+            throw new Exception("Failed to create daily report.");
+        }
+    } catch (Exception $e) {
+        logError($e->getMessage());
+        redirect('error.php');
+    }
 }
-
-
-$result = $report->create($data);
-
-if ($result) {
-    echo json_encode(["message" => "Report saved successfully"]);
-} else {
-    logError("Failed to save report in DailyReport::create() with data: " . json_encode($data));
-    echo json_encode(["error" => "Failed to save report"]);
-}
-
 ?>
+
 <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg">
     <h2 class="text-2xl font-bold text-center mb-4">Daily Report Form</h2>
     

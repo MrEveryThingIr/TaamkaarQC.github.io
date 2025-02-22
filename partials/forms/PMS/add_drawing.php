@@ -1,29 +1,58 @@
 <?php
-require_once 'classes/Drawing.php';
+require_once 'classes/controllers/DBController.php'; // Include the DBController class
 
-$drawing = new Drawing();
-$data = $_POST;
+// If form is submitted, process the request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle file upload for the Drawing File
+    $drawingFileName = handleFileUpload('drawings', 'drawing_file');
+    if (!$drawingFileName) {
+        logError("Failed to upload Drawing file.");
+        redirect('error.php'); // Redirect to an error page
+        exit;
+    }
 
-// Handle drawing file upload
-$drawingFile = handleFileUpload('drawings', 'drawing_file');
-if ($drawingFile) {
-    $data['drawing_file'] = uploads_url("drawings/$drawingFile"); 
-} else {
-    $data['drawing_file'] = "";
+    // Prepare the data for insertion
+    $data = [
+        'project_id' => $_POST['project_id'],
+        'drawing_number' => $_POST['drawing_number'],
+        'drawing_file' => $drawingFileName, // Save the relative path
+    ];
+
+    try {
+        // Initialize the DBController for the 'drawing' model
+        $controller = new DBController('drawing', 'create', null, $data);
+
+        // Execute the action (create a new drawing)
+        $result = $controller->executeAction();
+
+        if ($result) {
+            // Redirect to a success page
+            redirect('index.php?page=PMS&sidebarClickedItem=drawing&navbarClickedItem=all');
+        } else {
+            throw new Exception("Failed to register drawing.");
+        }
+    } catch (Exception $e) {
+        logError($e->getMessage());
+        redirect('error.php'); // Redirect to an error page
+    }
 }
 
-// Insert data into database
-$drawing->create($data);
-
-echo json_encode(["message" => "Drawing saved successfully"]);
+// Fetch project list dynamically
+$controller = new DBController('project', 'read_all');
+$projects = $controller->executeAction();
 ?>
+
 <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg">
     <h2 class="text-2xl font-bold text-center mb-4">Drawing Registration Form</h2>
     
     <form method="post" action="" id="drawingForm" enctype="multipart/form-data">
         <!-- Project ID -->
         <label class="block font-semibold">Project ID</label>
-        <input type="number" name="project_id" class="w-full border p-2 mb-4 rounded" required>
+        <select name="project_id" class="w-full border p-2 mb-4 rounded" required>
+            <?php foreach ($projects as $project): ?>
+                <option value="<?= $project['id'] ?>">Project #<?= htmlspecialchars($project['id']) ?> - <?= htmlspecialchars($project['title']) ?></option>
+            <?php endforeach; ?>
+        </select>
 
         <!-- Drawing Number -->
         <label class="block font-semibold">Drawing Number</label>

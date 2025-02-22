@@ -35,11 +35,11 @@ class DBController
                 require_once 'classes/Part.php';
                 $this->model = new Part();
                 break;
-            case 'operrator':
+            case 'operator':
                 require_once 'classes/Operator.php';
                 $this->model = new Operator();
                 break;
-            case 'Device':
+            case 'device':
                 require_once 'classes/Device.php';
                 $this->model = new Device();
                 break;

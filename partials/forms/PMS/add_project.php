@@ -33,7 +33,7 @@ if (isPostRequest()) {
 
         if ($result) {
             // Redirect to a success page
-            redirect('index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=all');
+            redirect('index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=all');
         } else {
             throw new Exception("Failed to create project.");
         }

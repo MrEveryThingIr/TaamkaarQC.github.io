@@ -1,1 +1,5 @@
 File upload error: File upload error: File upload error: [2025-02-21 09:53:42] File upload error: null
+[2025-02-21 18:59:06] SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`tamkar_new`.`drawings`, CONSTRAINT `drawings_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE)
+[2025-02-21 19:32:16] Failed to upload Orderer Brand file.
+[2025-02-22 01:21:12] Invalid model key
+[2025-02-22 01:22:34] Invalid model key

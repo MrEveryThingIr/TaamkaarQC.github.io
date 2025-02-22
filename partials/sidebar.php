@@ -3,17 +3,22 @@ $items = [];
 
 if ($page == 'PMS') {
     $items = [
-        'پروژه ها' => 'index.php?page=PMS&sidebarClickedItem=projects'
-
-    
+        'پروژه ها' => 'index.php?page=PMS&sidebarClickedItem=project',
+        'نقشه ها' => 'index.php?page=PMS&sidebarClickedItem=drawing',
+        'قطعه ها' => 'index.php?page=PMS&sidebarClickedItem=part',
+        'اپراتورها' => 'index.php?page=PMS&sidebarClickedItem=operator',
+        'دستگاه ها' => 'index.php?page=PMS&sidebarClickedItem=device',
+        'نمونه ها' => 'index.php?page=PMS&sidebarClickedItem=sample',
+        'ابعاد' => 'index.php?page=PMS&sidebarClickedItem=dimension',
+        'گزارش روزانه' => 'index.php?page=PMS&sidebarClickedItem=daily_report',
     ];
 }
-
 ?>
+
 <aside class="bg-sidebar h-screen w-64 hidden sm:block shadow-xl flex flex-col">
     <div class="p-6">
         <a href="index.php?page=home" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">
-       مدیریت کیفی تامکار   
+            مدیریت کیفی تامکار   
         </a>
         <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
             <i class="fas fa-plus mr-3"></i> اطلاعیه ها
@@ -23,25 +28,10 @@ if ($page == 'PMS') {
     <nav class="text-white text-base font-semibold flex-grow overflow-y-auto">
         <?php 
         function renderMenuItems($items) {
-            foreach ($items as $title => $linkOrDropdownItems) {
-                if (is_array($linkOrDropdownItems)) {
-                    echo "<div x-data='{ open: false }' class='w-full'>
-                            <button @click='open = !open' class='flex items-center w-full text-white opacity-75 hover:opacity-100 py-4 pl-6 pr-6 nav-item'>
-                                <i class='fas fa-chevron-down mr-3 transition-transform duration-200' :class='{ \"rotate-180\": open }'></i>
-                                {$title}
-                            </button>
-                            <div x-show='open' class='ml-6 pl-2 bg-gray-800 rounded-md' x-transition>
-                                <ul class='py-1'>";
-                    renderMenuItems($linkOrDropdownItems);
-                    echo "</ul>
-                            </div>
-                          </div>";
-                } else {
-                    // Normal link
-                    echo "<a href='{$linkOrDropdownItems}' class='block text-white opacity-75 hover:opacity-100 py-3 pl-8 pr-6 nav-item'>
-                            {$title}
-                          </a>";
-                }
+            foreach ($items as $title => $link) {
+                echo "<a href='{$link}' class='block text-white opacity-75 hover:opacity-100 py-3 pl-8 pr-6 nav-item'>
+                        {$title}
+                      </a>";
             }
         }
 

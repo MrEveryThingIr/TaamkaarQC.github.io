@@ -1,13 +1,25 @@
 <?php
-require_once 'classes/Operator.php';
+require_once 'classes/controllers/DBController.php'; // Include the DBController class
 
-$operator = new Operator();
-$data = $_POST;
+// Handle form submission for operator registration
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = [
+        'first_name' => $_POST['first_name'],
+        'last_name' => $_POST['last_name'],
+        'nick_name' => $_POST['nick_name'] ?? null, // Optional field
+    ];
 
-// Insert data into database
-$operator->create($data);
-
-echo json_encode(["message" => "Operator saved successfully"]);
+    // Initialize the DBController for the 'operator' model
+    $controller = new DBController('operator', 'create', null, $data);
+    $result = $controller->executeAction();
+    
+    if ($result) {
+        header('Location: index.php?page=PMS&sidebarClickedItem=operator&navbarClickedItem=all');
+        exit;
+    } else {
+        echo "<p class='text-red-500'>Failed to register operator.</p>";
+    }
+}
 ?>
 
 <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg">
@@ -30,5 +42,3 @@ echo json_encode(["message" => "Operator saved successfully"]);
         <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded w-full">Submit</button>
     </form>
 </div>
-
-

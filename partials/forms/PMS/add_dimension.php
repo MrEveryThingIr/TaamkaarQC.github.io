@@ -2,13 +2,20 @@
     <h2 class="text-2xl font-bold text-center mb-4">Dimension Form</h2>
     
     <form method="post" action="" id="dimensionForm">
-        <!-- Drawing ID -->
-        <label class="block font-semibold">Drawing ID</label>
-        <input type="number" name="drawing_id" class="w-full border p-2 mb-4 rounded" required>
+     <!-- Drawing ID -->
+     <div class="form-group">
+            <label for="drawing_id">نقشه:</label>
+            <select id="drawing_id" name="drawing_id" required>
+                <option value="">نقشه را انتخاب کنید</option>
+            </select>
+        </div>
 
-        <!-- Part ID -->
-        <label class="block font-semibold">Part ID</label>
-        <input type="number" name="part_id" class="w-full border p-2 mb-4 rounded" required>
+        <div class="form-group">
+            <label for="part_id">قطعه</label>
+            <select id="part_id" name="part_id" required>
+                <option value="">قطعه را انتخاب کنید</option>
+            </select>
+        </div>
 
         <!-- Tag -->
         <label class="block font-semibold">Tag</label>
@@ -46,3 +53,27 @@
     </form>
 </div>
 
+<script>
+    $(document).ready(function () {
+    // Load drawings dynamically
+    $.getJSON('get_drawingParts.php', function (drawings) {
+        $.each(drawings, function (index, drawing) {
+            $("#drawing_id").append(`<option value="${drawing.id}">${drawing.name}</option>`);
+        });
+    });
+
+    // Load cities when province changes
+    $("#drawing_id").on("change", function () {
+        let drawingId = $(this).val();
+        $("#part_id").empty().append('<option value="">لطفا قطعه مورد نظر انتخاب شود</option>');
+        if (drawingId) {
+            $.post('get_drawingParts.php', { drawing_id: drawingId }, function (parts) {
+                $.each(parts, function (index, part) {
+                    $("#part_id").append(`<option value="${part.id}">${part.name}</option>`);
+                });
+            }, "json");
+        }
+    });
+
+});
+</script>

@@ -143,4 +143,5 @@ function handleFileUpload($upload_category, $input_name, $allowedTypes = ['jpg',
 }
 
 
+
 ?>

@@ -20,33 +20,49 @@ function generateNavbar($items) {
     echo '</ul>';
     echo '</div>';
 }
+
 $navbarItems = [];
-if($sidebarClickedItem == 'projects') {
 $navbarClickedItem = $_GET['navbarClickedItem'] ?? ''; // Get navbar item from query
 
-$navbarItems = [
-    [
-        'label' => 'همه پروژه ها',
-        'url' => 'index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=all',
-        'icon' => '<svg class="w-6 h-6 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm0 2v10h14V5H3Zm2 2h10v2H5V7Zm0 4h10v2H5v-2Z"/></svg>',
-        'active' => $navbarClickedItem === 'all'
+$navConfig = [
+    'project' => [
+        ['label' => 'همه پروژه ها', 'url' => 'index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'تعریف پروژه جدید', 'url' => 'index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
+        ['label' => 'گزارش روزانه', 'url' => 'index.php?page=PMS&sidebarClickedItem=project&navbarClickedItem=daily_report', 'active' => $navbarClickedItem === 'daily_report'],
     ],
-    [
-        'label' => 'تعریف پروژه جدید',
-        'url' => 'index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=add_project',
-        'icon' => '<svg class="w-6 h-6 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 1 0 8 8 8.011 8.011 0 0 0-8-8Zm1 9h3a1 1 0 0 0 0-2h-3V6a1 1 0 0 0-2 0v3H6a1 1 0 0 0 0 2h3v3a1 1 0 0 0 2 0v-3Z"/></svg>',
-        'active' => $navbarClickedItem === 'add_project'
+    'drawing' => [
+        ['label' => 'همه ی نقشه ها', 'url' => 'index.php?page=PMS&sidebarClickedItem=drawing&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'انتساب نقشه', 'url' => 'index.php?page=PMS&sidebarClickedItem=drawing&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
     ],
-    [
-        'label' => 'گزارش روزانه',
-        'url' => 'index.php?page=PMS&sidebarClickedItem=projects&navbarClickedItem=daily_report',
-        'icon' => '<svg class="w-6 h-6 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6.828a2 2 0 0 0-.586-1.414L14.586 2.586A2 2 0 0 0 13.172 2H4Zm0 2h8v4h4v8H4V4Zm6 2a1 1 0 0 1 1 1v1h1a1 1 0 0 1 0 2h-1v1a1 1 0 1 1-2 0v-1H7a1 1 0 1 1 0-2h1V7a1 1 0 0 1 1-1Z"/></svg>',
-        'active' => $navbarClickedItem === 'daily_report'
+    'part' => [
+        ['label' => 'همه قطعات', 'url' => 'index.php?page=PMS&sidebarClickedItem=part&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'انتساب قطعه', 'url' => 'index.php?page=PMS&sidebarClickedItem=part&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
+    ],
+    'operator' => [
+        ['label' => 'همه اپراتورها', 'url' => 'index.php?page=PMS&sidebarClickedItem=operator&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'تعریف اپراتور جدید', 'url' => 'index.php?page=PMS&sidebarClickedItem=operator&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
+    ],
+    'device' => [
+        ['label' => 'همه دستگاه ها', 'url' => 'index.php?page=PMS&sidebarClickedItem=device&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'افزودن دستگاه', 'url' => 'index.php?page=PMS&sidebarClickedItem=device&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
+    ],
+    'sample' => [
+        ['label' => 'همه نمونه ها', 'url' => 'index.php?page=PMS&sidebarClickedItem=sample&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'افزودن نمونه', 'url' => 'index.php?page=PMS&sidebarClickedItem=sample&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
+    ],
+    'dimension' => [
+        ['label' => 'همه ابعاد', 'url' => 'index.php?page=PMS&sidebarClickedItem=dimension&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'افزودن بعد', 'url' => 'index.php?page=PMS&sidebarClickedItem=dimension&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
+    ],
+    'daily_report' => [
+        ['label' => 'گزارشات روزانه', 'url' => 'index.php?page=PMS&sidebarClickedItem=daily_report&navbarClickedItem=all', 'active' => $navbarClickedItem === 'all'],
+        ['label' => 'افزودن گزارش', 'url' => 'index.php?page=PMS&sidebarClickedItem=daily_report&navbarClickedItem=add', 'active' => $navbarClickedItem === 'add'],
     ],
 ];
-}
 
-// if()
+if (isset($navConfig[$sidebarClickedItem])) {
+    $navbarItems = $navConfig[$sidebarClickedItem];
+}
 
 // Render the navbar
 generateNavbar($navbarItems);

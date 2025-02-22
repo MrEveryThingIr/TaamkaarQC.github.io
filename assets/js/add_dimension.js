@@ -1,25 +1,22 @@
-
-$(document).ready(function() {
-    $("#dimensionForm").submit(function(e) {
-        e.preventDefault();
-
-        // Collect form data
-        var formData = $(this).serialize();
-
-        // Post data to the server
-        $.ajax({
-            type: "POST",
-            url: "",  // Specify your PHP script here for handling the form submission
-            data: formData,
-            success: function(response) {
-                // Handle the server response here, like showing a success message
-                alert('Dimension added successfully!');
-            },
-            error: function() {
-                // Handle errors here
-                alert('There was an error while submitting the form.');
-            }
+$(document).ready(function () {
+    // Load drawings dynamically
+    $.getJSON('get_drawingParts.php', function (drawings) {
+        $.each(drawings, function (index, drawing) {
+            $("#drawing_id").append(`<option value="${drawing.id}">${drawing.name}</option>`);
         });
     });
-});
 
+    // Load parts when a drawing is selected
+    $("#drawing_id").on("change", function () {
+        let drawingId = $(this).val();
+        $("#part_id").empty().append('<option value="">لطفا قطعه مورد نظر انتخاب شود</option>');
+        
+        if (drawingId) {
+            $.post('get_drawingParts.php', { drawing_id: drawingId }, function (parts) {
+                $.each(parts, function (index, part) {
+                    $("#part_id").append(`<option value="${part.id}">${part.name}</option>`);
+                });
+            }, "json");
+        }
+    });
+});

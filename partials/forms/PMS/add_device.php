@@ -1,3 +1,40 @@
+<?php
+require_once 'classes/controllers/DBController.php'; // Include the DBController class
+
+// If form is submitted, process the request
+if (isPostRequest()) {
+    // Prepare the data for insertion
+    $data = [
+        'hall' => getPostData('hall'),
+        'device_name' => getPostData('device_name'),
+    ];
+
+    // Validate the data (you can add more validation as needed)
+    if (empty($data['hall']) || empty($data['device_name'])) {
+        logError("Validation failed: Hall or Device Name is empty.");
+        redirect('error.php'); // Redirect to an error page
+        exit;
+    }
+
+    try {
+        // Initialize the DBController for the 'device' model
+        $controller = new DBController('device', 'create', null, $data);
+
+        // Execute the action (create a new device)
+        $result = $controller->executeAction();
+
+        if ($result) {
+            // Redirect to a success page
+            redirect('index.php?page=devices&sidebarClickedItem=device&navbarClickedItem=all');
+        } else {
+            throw new Exception("Failed to create device.");
+        }
+    } catch (Exception $e) {
+        logError($e->getMessage());
+        redirect('error.php'); // Redirect to an error page
+    }
+}
+?>
 <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg">
     <h2 class="text-2xl font-bold text-center mb-4">Device Form</h2>
     

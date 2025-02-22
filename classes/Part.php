@@ -111,4 +111,18 @@ class Part
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getPartsByDrawingId($drawing_id)
+{
+    try {
+        $sql = "SELECT * FROM {$this->table} WHERE dwg_id = :drawing_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':drawing_id', $drawing_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        throw new Exception("Error fetching parts: " . $e->getMessage());
+    }
+}
+
 }
